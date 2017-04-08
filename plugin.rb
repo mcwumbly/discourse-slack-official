@@ -33,7 +33,7 @@ after_initialize do
     requires_plugin DiscourseSlack::PLUGIN_NAME
 
     before_filter :slack_token_valid?, only: :command
-    skip_before_filter :check_xhr, :preload_json, :verify_authenticity_token, only: :command
+    skip_before_filter :check_xhr, :preload_json, :verify_authenticity_token, :redirect_to_login_if_required, only: :command
 
     def list
       out = []
@@ -177,6 +177,7 @@ after_initialize do
       user = User.find_by(username: SiteSetting.slack_discourse_username)
       TopicView.new(topic_id, user, post_number: post_number)
     end
+
   end
 
   if !PluginStore.get(DiscourseSlack::PLUGIN_NAME, "not_first_time") && !Rails.env.test?
